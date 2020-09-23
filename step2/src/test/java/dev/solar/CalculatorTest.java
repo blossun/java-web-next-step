@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 class CalculatorTest {
     private Calculator cal;
@@ -81,10 +82,23 @@ class CalculatorTest {
         assertThat(cal.calculate("//;\n1;2;3")).isEqualTo(6);
     }
 
+    @DisplayName("문자열 계산 5 - 커스텀 구분자2")
+    @Test
+    void calculate6() {
+        assertThat(cal.calculate("//*\n1*2*-3")).isEqualTo(6);
+    }
+
     @DisplayName("구분자 추출 - 있는 경우")
     @Test
     void extractDelimiter() {
         String str = "//;\n";
+        assertThat(cal.extractDelimiter(str)).isEqualTo(";");
+    }
+
+    @DisplayName("구분자 추출2")
+    @Test
+    void extractDelimiter1_2() {
+        String str = "//*\n1*2*3";
         assertThat(cal.extractDelimiter(str)).isEqualTo(";");
     }
 
@@ -100,5 +114,19 @@ class CalculatorTest {
     void extractDelimiter3() {
         String str = "//\n";
         assertThat(cal.extractDelimiter(str)).isEqualTo("");
+    }
+
+    @DisplayName("음수값 입력에대한 exception 처리")
+    @Test
+    void 음수값에러() {
+        String str = "1,2,-3";
+//        String str = "//*\n1*2*-3";
+
+        // WHEN
+        Throwable thrown = catchThrowable(() -> cal.calculate(str));
+
+        //THEN
+        assertThat(thrown).isInstanceOf(NotAllowedValueException.class)
+                .hasMessageContaining("음수");
     }
 }

@@ -9,9 +9,20 @@ public class Calculator {
             str = str.substring(str.indexOf("\n") + 1);
             System.out.println("str :" + str);
         }
-        return sumOfIntegers(stringsToIntegers(splitString(str, customDelimiter)));
+        Integer[] integers = stringsToIntegers(splitString(str, customDelimiter));
+        isExistedNegative(integers);
+        return sumOfIntegers(integers);
     }
 
+    private void isExistedNegative(Integer[] integers) {
+        for (Integer integer : integers) {
+            if (integer < 0) {
+                throw new NotAllowedValueException("음수값은 입력하실 수 없습니다.");
+            }
+        }
+    }
+
+    // Todo : 구분자 추출 테스트 케이스 실패 해결
     public String extractDelimiter(String str) {
         try {
             return str.substring(str.indexOf("//") + 2, str.indexOf("\n"));
