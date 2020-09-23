@@ -4,15 +4,31 @@ public class Calculator {
 
     public int calculate(String str) {
         if (isBlank(str)) return 0;
-        return sumOfIntegers(stringsToIntegers(splitString(str)));
+        String customDelimiter = extractDelimiter(str);
+        if (customDelimiter != null) {
+            str = str.substring(str.indexOf("\n") + 1);
+            System.out.println("str :" + str);
+        }
+        return sumOfIntegers(stringsToIntegers(splitString(str, customDelimiter)));
+    }
+
+    public String extractDelimiter(String str) {
+        try {
+            return str.substring(str.indexOf("//") + 2, str.indexOf("\n"));
+        } catch (StringIndexOutOfBoundsException e) {
+            return null;
+        }
     }
 
     private boolean isBlank(String str) {
         return str == null || str.equals("");
     }
 
-    public String[] splitString(String str) {
-        String[] splitStr = str.split("[,:]");
+    public String[] splitString(String str, String delimiter) {
+        if (delimiter == null) {
+            delimiter = "[,:]";
+        }
+        String[] splitStr = str.split(delimiter);
         return splitStr;
     }
 

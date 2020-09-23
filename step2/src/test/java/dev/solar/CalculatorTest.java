@@ -19,7 +19,7 @@ class CalculatorTest {
     void step1() {
         String str = "1,2:3";
         String[] expected = {"1", "2", "3"};
-        String[] actual = cal.splitString(str);
+        String[] actual = cal.splitString(str, null);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -28,7 +28,7 @@ class CalculatorTest {
     void step1_2() {
         String str = "1,2,3";
         String[] expected = {"1", "2", "3"};
-        String[] actual = cal.splitString(str);
+        String[] actual = cal.splitString(str, null);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -73,5 +73,32 @@ class CalculatorTest {
     @Test
     void calculate4() {
         assertThat(cal.calculate("4")).isEqualTo(4);
+    }
+
+    @DisplayName("문자열 계산 5 - 커스텀 구분자")
+    @Test
+    void calculate5() {
+        assertThat(cal.calculate("//;\n1;2;3")).isEqualTo(6);
+    }
+
+    @DisplayName("구분자 추출 - 있는 경우")
+    @Test
+    void extractDelimiter() {
+        String str = "//;\n";
+        assertThat(cal.extractDelimiter(str)).isEqualTo(";");
+    }
+
+    @DisplayName("구분자 추출 - 없는 경우")
+    @Test
+    void extractDelimiter2() {
+        String str = "1;2;3";
+        assertThat(cal.extractDelimiter(str)).isNull();
+    }
+
+    @DisplayName("구분자 추출 - 빈 문자경우")
+    @Test
+    void extractDelimiter3() {
+        String str = "//\n";
+        assertThat(cal.extractDelimiter(str)).isEqualTo("");
     }
 }
