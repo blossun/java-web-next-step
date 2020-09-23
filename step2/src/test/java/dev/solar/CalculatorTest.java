@@ -1,10 +1,13 @@
 package dev.solar;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CalculatorTest {
     private Calculator cal;
@@ -12,35 +15,42 @@ class CalculatorTest {
     @BeforeEach
     void setUp() {
         cal = new Calculator();
-        System.out.println("before");
     }
 
+    @DisplayName("문자열을 구분자로 분리")
     @Test
-    void add() {
-        assertEquals(9, cal.add(6, 3));
-        System.out.println("add");
+    void step1() {
+        String str = "1,2:3";
+        List<String> expected = new ArrayList<>();
+        expected.add("1");
+        expected.add("2");
+        expected.add("3");
+        List<String> actual = cal.splitString(str);
+        assertThat(actual).isEqualTo(expected);
     }
 
+    @DisplayName("문자리스트를 숫자리스트로 변환")
     @Test
-    void subtract() {
-        assertEquals(3, cal.subtract(6, 3));
-        System.out.println("subtract");
+    void step2() {
+        List<String> stringList = new ArrayList<>();
+        stringList.add("1");
+        stringList.add("2");
+        stringList.add("3");
+        List<Integer> expected = new ArrayList<>();
+        expected.add(1);
+        expected.add(2);
+        expected.add(3);
+        assertThat(cal.stringsToIntegers(stringList)).isEqualTo(expected);
     }
 
+    @DisplayName("숫자리스트의 합")
     @Test
-    void multiply() {
-        assertEquals(18, cal.multiply(6, 3));
-        System.out.println("multiply");
-    }
-
-    @Test
-    void divide() {
-        assertEquals(2, cal.divide(6, 3));
-        System.out.println("divide");
-    }
-
-    @AfterEach
-    void teardown() {
-        System.out.println("teardown");
+    void step3() {
+        List<Integer> integerList = new ArrayList<>();
+        integerList.add(1);
+        integerList.add(2);
+        integerList.add(3);
+        int expected = 6;
+        assertThat(cal.sum(integerList)).isEqualTo(expected);
     }
 }

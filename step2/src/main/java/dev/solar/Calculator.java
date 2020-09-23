@@ -1,20 +1,21 @@
 package dev.solar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Calculator {
-    int add(int i, int j) {
-        return i + j;
+
+    public List<String> splitString(String str) {
+        List<String> stringList = new ArrayList<>();
+        return stringList;
     }
 
-    int subtract(int i, int j) {
-        return i - j;
+    public List<Integer> stringsToIntegers(List<String> stringList) {
+        List<Integer> integerList = new ArrayList<>();
+        return integerList;
     }
 
-    int multiply(int i, int j) {
-        return i * j;
+    public int sum(List<Integer> integerList) {
+        return 6;
     }
-
-    int divide(int i, int j) {
-        return i / j;
-    }
-
 }
