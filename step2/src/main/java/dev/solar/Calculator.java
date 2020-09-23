@@ -1,21 +1,35 @@
 package dev.solar;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Calculator {
 
-    public List<String> splitString(String str) {
-        List<String> stringList = new ArrayList<>();
-        return stringList;
+    public int calculate(String str) {
+        if (isBlank(str)) return 0;
+        return sumOfIntegers(stringsToIntegers(splitString(str)));
     }
 
-    public List<Integer> stringsToIntegers(List<String> stringList) {
-        List<Integer> integerList = new ArrayList<>();
-        return integerList;
+    private boolean isBlank(String str) {
+        return str == null || str.equals("");
     }
 
-    public int sum(List<Integer> integerList) {
-        return 6;
+    public String[] splitString(String str) {
+        String[] splitStr = str.split("[,:]");
+        return splitStr;
+    }
+
+    public Integer[] stringsToIntegers(String[] strings) {
+        Integer[] integers = new Integer[strings.length];
+        for (int i = 0; i < strings.length; i++) {
+            integers[i] = Integer.parseInt(strings[i]);
+        }
+        return integers;
+    }
+
+    public int sumOfIntegers(Integer[] integers) {
+        int sum = 0;
+
+        for (Integer integer : integers) {
+            sum += integer;
+        }
+        return sum;
     }
 }

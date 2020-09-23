@@ -4,9 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class CalculatorTest {
@@ -17,40 +14,64 @@ class CalculatorTest {
         cal = new Calculator();
     }
 
-    @DisplayName("문자열을 구분자로 분리")
+    @DisplayName("문자열을 구분자로 분리 - multi 구분자")
     @Test
     void step1() {
         String str = "1,2:3";
-        List<String> expected = new ArrayList<>();
-        expected.add("1");
-        expected.add("2");
-        expected.add("3");
-        List<String> actual = cal.splitString(str);
+        String[] expected = {"1", "2", "3"};
+        String[] actual = cal.splitString(str);
         assertThat(actual).isEqualTo(expected);
     }
 
-    @DisplayName("문자리스트를 숫자리스트로 변환")
+    @DisplayName("문자열을 구분자로 분리2 - single 구분자")
+    @Test
+    void step1_2() {
+        String str = "1,2,3";
+        String[] expected = {"1", "2", "3"};
+        String[] actual = cal.splitString(str);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("문자배열을 숫자배열로 변환")
     @Test
     void step2() {
-        List<String> stringList = new ArrayList<>();
-        stringList.add("1");
-        stringList.add("2");
-        stringList.add("3");
-        List<Integer> expected = new ArrayList<>();
-        expected.add(1);
-        expected.add(2);
-        expected.add(3);
-        assertThat(cal.stringsToIntegers(stringList)).isEqualTo(expected);
+        String[] strings = {"1", "2", "3"};
+        Integer[] expected = {1, 2, 3};
+        assertThat(cal.stringsToIntegers(strings)).isEqualTo(expected);
     }
 
     @DisplayName("숫자리스트의 합")
     @Test
     void step3() {
-        List<Integer> integerList = new ArrayList<>();
-        integerList.add(1);
-        integerList.add(2);
-        integerList.add(3);
+        Integer[] integers = {1, 2, 3};
         int expected = 6;
-        assertThat(cal.sum(integerList)).isEqualTo(expected);
+        assertThat(cal.sumOfIntegers(integers)).isEqualTo(expected);
+    }
+
+    @DisplayName("문자열 계산 - 문자열이 빈 경우")
+    @Test
+    void calculate() {
+        int expected = 0;
+        assertThat(cal.calculate("")).isEqualTo(expected);
+    }
+
+    @DisplayName("문자열 계산 2 - 1,2")
+    @Test
+    void calculate2() {
+        int expected = 3;
+        assertThat(cal.calculate("1,2")).isEqualTo(expected);
+    }
+
+    @DisplayName("문자열 계산 3 - 1,2:3")
+    @Test
+    void calculate3() {
+        int expected = 6;
+        assertThat(cal.calculate("1,2:3")).isEqualTo(expected);
+    }
+
+    @DisplayName("문자열 계산 4 - 4")
+    @Test
+    void calculate4() {
+        assertThat(cal.calculate("4")).isEqualTo(4);
     }
 }
