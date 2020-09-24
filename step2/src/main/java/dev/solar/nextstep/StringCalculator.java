@@ -7,6 +7,10 @@ public class StringCalculator {
         }
 
         String[] values = text.split(",");
+        return sum(values);
+    }
+
+    private int sum(String[] values) {
         int sum = 0;
         for (String value : values) {
             sum += Integer.parseInt(value);
