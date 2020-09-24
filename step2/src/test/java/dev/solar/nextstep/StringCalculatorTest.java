@@ -23,4 +23,9 @@ class StringCalculatorTest {
     void add_숫자하나() {
         assertThat(cal.add("1")).isEqualTo(1);
     }
+
+    @Test
+    void add_쉼표구분자() {
+        assertThat(cal.add("1,2")).isEqualTo(3);
+    }
 }
