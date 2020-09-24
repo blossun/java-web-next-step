@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CalculatorTest {
     private Calculator cal;
@@ -126,6 +127,21 @@ class CalculatorTest {
         Throwable thrown = catchThrowable(() -> cal.calculate(str));
 
         //THEN
+        assertThat(thrown).isInstanceOf(NotAllowedValueException.class)
+                .hasMessageContaining("음수");
+    }
+
+    @DisplayName("음수값 입력에대한 exception 처리 2")
+    @Test
+    void 음수값에러2() {
+        String str = "1,2,-3";
+
+        // WHEN
+        NotAllowedValueException thrown = assertThrows(NotAllowedValueException.class, () -> cal.calculate(str));
+        // If the exception has not been thrown, the above test has failed.
+
+        // THEN
+        // And now you may futther inspect the returned exception ...
         assertThat(thrown).isInstanceOf(NotAllowedValueException.class)
                 .hasMessageContaining("음수");
     }
