@@ -33,4 +33,9 @@ class StringCalculatorTest {
     void add_쉽표_또는_콜론_구분자() {
         assertThat(cal.add("1,2:3")).isEqualTo(6);
     }
+
+    @Test
+    void add_custom_구분자() {
+        assertThat(cal.add("//;\n1;2;3")).isEqualTo(6);
+    }
 }
