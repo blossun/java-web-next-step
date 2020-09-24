@@ -80,8 +80,7 @@ class CalculatorTest {
     @DisplayName("문자열 계산 - 문자열이 빈 경우")
     @Test
     void calculate() {
-        int expected = 0;
-        assertThat(cal.calculate("")).isEqualTo(expected);
+        assertThat(cal.calculate("")).isZero();
     }
 
     @DisplayName("문자열 계산 2 - 1,2")
