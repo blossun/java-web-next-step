@@ -21,7 +21,7 @@ class CalculatorTest {
     void step1() {
         String str = "1,2:3";
         String[] expected = {"1", "2", "3"};
-        String[] actual = cal.splitString(str, null);
+        String[] actual = cal.splitString(str);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -30,7 +30,34 @@ class CalculatorTest {
     void step1_2() {
         String str = "1,2,3";
         String[] expected = {"1", "2", "3"};
-        String[] actual = cal.splitString(str, null);
+        String[] actual = cal.splitString(str);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("문자열을 구분자로 분리3 - 커스텀 구분자 ;")
+    @Test
+    void step1_3() {
+        String str = "//;\n1;2;3";
+        String[] expected = {"1", "2", "3"};
+        String[] actual = cal.splitString(str);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("문자열을 구분자로 분리4 - 커스텀 구분자 *")
+    @Test
+    void step1_4() {
+        String str = "//*\n1*2*3"; // *를 구분자로 쓰려면 split("\\*"); 로 써줘야함
+        String[] expected = {"1", "2", "3"};
+        String[] actual = cal.splitString(str);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("문자열을 구분자로 분리4 - 커스텀 구분자 \n")
+    @Test
+    void step1_5() {
+        String str = "//*\n1*2*3";
+        String[] expected = {"1", "2", "3"};
+        String[] actual = cal.splitString(str);
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -86,35 +113,7 @@ class CalculatorTest {
     @DisplayName("문자열 계산 5 - 커스텀 구분자2")
     @Test
     void calculate6() {
-        assertThat(cal.calculate("//*\n1*2*-3")).isEqualTo(6);
-    }
-
-    @DisplayName("구분자 추출 - 있는 경우")
-    @Test
-    void extractDelimiter() {
-        String str = "//;\n";
-        assertThat(cal.extractDelimiter(str)).isEqualTo(";");
-    }
-
-    @DisplayName("구분자 추출2")
-    @Test
-    void extractDelimiter1_2() {
-        String str = "//*\n1*2*3";
-        assertThat(cal.extractDelimiter(str)).isEqualTo(";");
-    }
-
-    @DisplayName("구분자 추출 - 없는 경우")
-    @Test
-    void extractDelimiter2() {
-        String str = "1;2;3";
-        assertThat(cal.extractDelimiter(str)).isNull();
-    }
-
-    @DisplayName("구분자 추출 - 빈 문자경우")
-    @Test
-    void extractDelimiter3() {
-        String str = "//\n";
-        assertThat(cal.extractDelimiter(str)).isEqualTo("");
+        assertThat(cal.calculate("//*\n1*2*3")).isEqualTo(6);
     }
 
     @DisplayName("음수값 입력에대한 exception 처리")

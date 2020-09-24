@@ -1,15 +1,13 @@
 package dev.solar;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Calculator {
 
     public int calculate(String str) {
         if (isBlank(str)) return 0;
-        String customDelimiter = extractDelimiter(str);
-        if (customDelimiter != null) {
-            str = str.substring(str.indexOf("\n") + 1);
-            System.out.println("str :" + str);
-        }
-        Integer[] integers = stringsToIntegers(splitString(str, customDelimiter));
+        Integer[] integers = stringsToIntegers(splitString(str));
         isExistedNegative(integers);
         return sumOfIntegers(integers);
     }
@@ -22,25 +20,19 @@ public class Calculator {
         }
     }
 
-    // Todo : 구분자 추출 테스트 케이스 실패 해결
-    public String extractDelimiter(String str) {
-        try {
-            return str.substring(str.indexOf("//") + 2, str.indexOf("\n"));
-        } catch (StringIndexOutOfBoundsException e) {
-            return null;
-        }
-    }
-
     private boolean isBlank(String str) {
         return str == null || str.equals("");
     }
 
-    public String[] splitString(String str, String delimiter) {
-        if (delimiter == null) {
-            delimiter = "[,:]";
+    // splitString에서 구분자 추출과 split을 둘 다 하도록 수정함
+    public String[] splitString(String str) {
+        Matcher m = Pattern.compile("//(.)\n(.*)").matcher(str);
+        if (m.find()) {
+            String delimeter = m.group(1);
+            return m.group(2).split(delimeter);
         }
-        String[] splitStr = str.split(delimiter);
-        return splitStr;
+
+        return str.split("[,:]");
     }
 
     public Integer[] stringsToIntegers(String[] strings) {
