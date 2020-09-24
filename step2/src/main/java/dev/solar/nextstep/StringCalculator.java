@@ -2,12 +2,16 @@ package dev.solar.nextstep;
 
 public class StringCalculator {
     public int add(String text) {
-        if (text == null || text.isEmpty()) {
+        if (isBlank(text)) {
             return 0;
         }
 
         String[] values = text.split(",");
         return sum(toInts(values));
+    }
+
+    private boolean isBlank(String text) {
+        return text == null || text.isEmpty();
     }
 
     private int sum(int[] values) {
