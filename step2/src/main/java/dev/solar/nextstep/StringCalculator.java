@@ -7,14 +7,23 @@ public class StringCalculator {
         }
 
         String[] values = text.split(",");
-        return sum(values);
+        return sum(toInts(values));
     }
 
-    private int sum(String[] values) {
+    private int sum(int[] values) {
         int sum = 0;
-        for (String value : values) {
-            sum += Integer.parseInt(value);
+        for (int value : values) {
+            sum += value;
         }
         return sum;
+    }
+
+    private int[] toInts(String[] values) {
+        int[] numbers = new int[values.length];
+        for (int i = 0; i < values.length; i++) {
+            numbers[i] = Integer.parseInt(values[i]);
+        }
+
+        return numbers;
     }
 }

@@ -7,13 +7,13 @@ public class Calculator {
 
     public int calculate(String str) {
         if (isBlank(str)) return 0;
-        Integer[] integers = stringsToIntegers(splitString(str));
+        int[] integers = stringsToIntegers(splitString(str));
         isExistedNegative(integers);
         return sumOfIntegers(integers);
     }
 
-    private void isExistedNegative(Integer[] integers) {
-        for (Integer integer : integers) {
+    private void isExistedNegative(int[] integers) {
+        for (int integer : integers) {
             if (integer < 0) {
                 throw new NotAllowedValueException("음수값은 입력하실 수 없습니다.");
             }
@@ -35,18 +35,18 @@ public class Calculator {
         return str.split("[,:]");
     }
 
-    public Integer[] stringsToIntegers(String[] strings) {
-        Integer[] integers = new Integer[strings.length];
+    public int[] stringsToIntegers(String[] strings) {
+        int[] numbers = new int[strings.length];
         for (int i = 0; i < strings.length; i++) {
-            integers[i] = Integer.parseInt(strings[i]);
+            numbers[i] = Integer.parseInt(strings[i]);
         }
-        return integers;
+        return numbers;
     }
 
-    public int sumOfIntegers(Integer[] integers) {
+    public int sumOfIntegers(int[] integers) {
         int sum = 0;
 
-        for (Integer integer : integers) {
+        for (int integer : integers) {
             sum += integer;
         }
         return sum;
