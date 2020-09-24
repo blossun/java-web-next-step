@@ -65,14 +65,14 @@ class CalculatorTest {
     @Test
     void step2() {
         String[] strings = {"1", "2", "3"};
-        Integer[] expected = {1, 2, 3};
+        int[] expected = {1, 2, 3};
         assertThat(cal.stringsToIntegers(strings)).isEqualTo(expected);
     }
 
     @DisplayName("숫자리스트의 합")
     @Test
     void step3() {
-        Integer[] integers = {1, 2, 3};
+        int[] integers = {1, 2, 3};
         int expected = 6;
         assertThat(cal.sumOfIntegers(integers)).isEqualTo(expected);
     }
