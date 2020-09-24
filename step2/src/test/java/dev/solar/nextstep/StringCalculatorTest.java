@@ -1,9 +1,11 @@
 package dev.solar.nextstep;
 
+import dev.solar.NotAllowedValueException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 class StringCalculatorTest {
     private StringCalculator cal;
@@ -37,5 +39,15 @@ class StringCalculatorTest {
     @Test
     void add_custom_구분자() {
         assertThat(cal.add("//;\n1;2;3")).isEqualTo(6);
+    }
+
+//    @Test(expected = RuntimeException.class) //junit4 문법
+    @Test
+    void add_negative() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> cal.add("-1,2,3"));
+
+        //THEN
+        assertThat(thrown).isInstanceOf(RuntimeException.class);
     }
 }

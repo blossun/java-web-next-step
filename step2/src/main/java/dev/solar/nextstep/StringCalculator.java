@@ -36,9 +36,18 @@ public class StringCalculator {
     private int[] toInts(String[] values) {
         int[] numbers = new int[values.length];
         for (int i = 0; i < values.length; i++) {
-            numbers[i] = Integer.parseInt(values[i]);
+            numbers[i] = toPositive(values[i]);
         }
 
         return numbers;
+    }
+
+    private int toPositive(String value) {
+        int number = Integer.parseInt(value);
+        if (number < 0) {
+            throw new RuntimeException();
+        }
+
+        return number;
     }
 }
