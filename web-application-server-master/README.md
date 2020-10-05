@@ -96,7 +96,28 @@ BufferReader의 readLine() 를 쓸때는 inputStream 이 반드시 개행문자�
 
 ### 요구사항 2 - get 방식으로 회원가입
 
-* 
+* HTTP request line
+
+```java
+15:34:01.365 [DEBUG] [Thread-15] [webserver.RequestHandler] - request line : GET /user/create?userId=solar&password=1234&name=%EC%86%94%EB%9D%BC&email=solar%40test.com HTTP/1.1
+```
+
+- URL : /user/create?`userId=solar&password=1234&name=%EC%86%94%EB%9D%BC&email=solar%40test.com`
+- path : `/user/create`
+- queryString : `userId=solar&password=1234&name=%EC%86%94%EB%9D%BC&email=solar%40test.com`
+
+
+
+#### GET 방식
+
+- 사용자가 입력한 데이터가 브라우저 URL 입력창에 표시된다.
+- 회원정보(비밀번호)가 URL에 노출되기 때문에 보안에 취약하다.
+- 요청 라인의 길이에 제한이 있다. → GET 방식으로 사용자가 입력할 수 있는 데이터 크기 제한
+- 따라서, 사용자가 입력한 데이터를 서버에 전송해 데이터를 추가할 때 적합하지 않음
+- RESTful API 를 사용하자
+  - 요청에 맞는  HTTP Method를 사용하는 방식
+
+
 
 ### 요구사항 3 - post 방식으로 회원가입
 * 
