@@ -3,9 +3,13 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.util.Map;
 
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static util.HttpRequestUtils.parseQueryString;
 
 public class RequestHandler extends Thread {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
@@ -21,43 +25,52 @@ public class RequestHandler extends Thread {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            /*
-             * step 1
-             * InputStream을 한 줄 단위로 읽기 위해 BufferedReader를 생성
-             */
             log.debug("[Request Header] ====> \n");
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             String line = br.readLine();
             log.debug("request line : {}", line);
 
-            // line이 null 값인 경우에 대한 예외처리 - 무한 루프 방지
             if (line == null) {
                 return ;
             }
-            /*
-             * step 2
-             * 헤더 첫 라인에서 url 정보 파싱
-             */
-            String[] tokens = line.split( " ");
-            String url = tokens[1];
-//
+
+            String url = getUrl(line);
 
             while (!"".equals(line)) {
                 line = br.readLine();
                 log.debug("header : {}", line);
             }
 
-            /*
-             * step 3
-             * 요청 URL에 해당하는 파일을 webapp 디렉토리에서 읽어 전달
-             */
-            DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
-            response200Header(dos, body.length);
-            responseBody(dos, body);
+            if ("/user/create".startsWith(url)) {
+                // URL에서 사용자 입력값 parsing
+                int indexOfDelimeter = url.indexOf("?");
+                String path = url.substring(0, indexOfDelimeter);
+                String queryString = url.substring(indexOfDelimeter + 1);
+                Map<String, String> params = parseQueryString(queryString);
+
+                // parameter 정보로 User 생성
+                User newUser = createUser(params);
+            } else {
+                DataOutputStream dos = new DataOutputStream(out);
+                byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
+                response200Header(dos, body.length);
+                responseBody(dos, body);
+            }
         } catch (IOException e) {
             log.error(e.getMessage());
         }
+    }
+
+    private User createUser(Map<String, String> params) {
+        User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
+        log.debug("[*] newUser : {}", user);
+        return user;
+    }
+
+    private String getUrl(String line) {
+        return line.split( " ")[1];
+//        String[] tokens = line.split( " ");
+//        return tokens[1];
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
