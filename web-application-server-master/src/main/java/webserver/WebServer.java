@@ -32,3 +32,8 @@ public class WebServer {
         }
     }
 }
+
+/*
+ * WebServer 클래스는 웹 서버를 시작하고, 사용자의 요청이 있을 때까지 대기 상태에 있다가 사용자의 요청이 있을 경우 사용자의 요청을 RequestHandler 클래스에 위임한다.
+ * 요청이 발생하는 순간 클라이언트와 연결을 담당하는 Socket을 RequestHandler에 전달하면 새로운 스레드를 실행하는 방식으로 멀티스레드 프로그래밍을 지원
+ */
