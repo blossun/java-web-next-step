@@ -21,16 +21,15 @@ public class RequestHandler extends Thread {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
-            // Request Header에서 url 정보를 파싱
             /*
              * step 1
              * InputStream을 한 줄 단위로 읽기 위해 BufferedReader를 생성
              */
             log.debug("[Request Header] ====> \n");
-            InputStreamReader inputStreamReader = new InputStreamReader(in);
-            BufferedReader br = new BufferedReader(inputStreamReader);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             String line = br.readLine();
+            log.debug("request line : {}", line);
+
             // line이 null 값인 경우에 대한 예외처리 - 무한 루프 방지
             if (line == null) {
                 return ;
@@ -41,12 +40,11 @@ public class RequestHandler extends Thread {
              */
             String[] tokens = line.split( " ");
             String url = tokens[1];
-            log.debug("[*] url : {}", url);
-
+//
 
             while (!"".equals(line)) {
-                System.out.println(line);
                 line = br.readLine();
+                log.debug("header : {}", line);
             }
 
             /*
@@ -54,7 +52,6 @@ public class RequestHandler extends Thread {
              * 요청 URL에 해당하는 파일을 webapp 디렉토리에서 읽어 전달
              */
             DataOutputStream dos = new DataOutputStream(out);
-//            byte[] body = "Hello World".getBytes();
             byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
             response200Header(dos, body.length);
             responseBody(dos, body);
