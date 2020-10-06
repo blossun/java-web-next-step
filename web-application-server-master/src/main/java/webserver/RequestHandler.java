@@ -3,13 +3,19 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.HttpRequestUtils;
 
+import static util.HttpRequestUtils.parseHeader;
 import static util.HttpRequestUtils.parseQueryString;
+import static util.IOUtils.readData;
 
 public class RequestHandler extends Thread {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
@@ -35,20 +41,20 @@ public class RequestHandler extends Thread {
             }
 
             String url = getUrl(line);
+            line = br.readLine(); //request line 다음부터 headers line
+            Map<String, String> headers = new HashMap<>();
 
             while (!"".equals(line)) {
-                line = br.readLine();
                 log.debug("header : {}", line);
+                HttpRequestUtils.Pair header = parseHeader(line);
+                headers.put(header.getKey(), header.getValue());
+                line = br.readLine();
             }
 
             if ("/user/create".startsWith(url)) {
-                // URL에서 사용자 입력값 parsing
-                int indexOfDelimeter = url.indexOf("?");
-                String path = url.substring(0, indexOfDelimeter);
-                String queryString = url.substring(indexOfDelimeter + 1);
-                Map<String, String> params = parseQueryString(queryString);
-
-                // parameter 정보로 User 생성
+                // request body에서 사용자 입력값 parsing
+                String requestBody = readData(br, Integer.parseInt(headers.get("Content-Length")));
+                Map<String, String> params = parseQueryString(requestBody);
                 User newUser = createUser(params);
             } else {
                 DataOutputStream dos = new DataOutputStream(out);
