@@ -56,6 +56,9 @@ public class RequestHandler extends Thread {
                 String requestBody = readData(br, Integer.parseInt(headers.get("Content-Length")));
                 Map<String, String> params = parseQueryString(requestBody);
                 User newUser = createUser(params);
+                DataOutputStream dos = new DataOutputStream(out);
+                response302Header(dos, "/index.html");
+                responseBody(dos, new byte[0]);
             } else {
                 DataOutputStream dos = new DataOutputStream(out);
                 byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
@@ -77,6 +80,16 @@ public class RequestHandler extends Thread {
         return line.split( " ")[1];
 //        String[] tokens = line.split( " ");
 //        return tokens[1];
+    }
+
+    private void response302Header(DataOutputStream dos, String location) {
+        try {
+            dos.writeBytes("HTTP/1.1 302 OK \r\n");
+            dos.writeBytes("Location: " + location + "\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
