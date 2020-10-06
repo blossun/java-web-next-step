@@ -58,7 +58,6 @@ public class RequestHandler extends Thread {
                 User newUser = createUser(params);
                 DataOutputStream dos = new DataOutputStream(out);
                 response302Header(dos, "/index.html");
-                responseBody(dos, new byte[0]);
             } else {
                 DataOutputStream dos = new DataOutputStream(out);
                 byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
