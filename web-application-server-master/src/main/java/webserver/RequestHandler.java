@@ -1,20 +1,18 @@
 package webserver;
 
-import java.io.*;
-import java.net.Socket;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import db.DataBase;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequestUtils;
 
-import static util.HttpRequestUtils.parseHeader;
-import static util.HttpRequestUtils.parseQueryString;
+import java.io.*;
+import java.net.Socket;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
+
+import static util.HttpRequestUtils.*;
 import static util.IOUtils.readData;
 
 public class RequestHandler extends Thread {
@@ -53,19 +51,20 @@ public class RequestHandler extends Thread {
                 line = br.readLine();
             }
 
+            DataOutputStream dos = new DataOutputStream(out);
+
             if ("/user/create".startsWith(url)) {
                 // request body에서 사용자 입력값 parsing
                 String requestBody = readData(br, Integer.parseInt(headers.get("Content-Length")));
                 Map<String, String> params = parseQueryString(requestBody);
-                User newUser = createUser(params);
-                DataOutputStream dos = new DataOutputStream(out);
+                createUser(params);
                 response302Header(dos, "/index.html");
-            } else {
-                DataOutputStream dos = new DataOutputStream(out);
-                byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
-                response200Header(dos, body.length);
-                responseBody(dos, body);
+                return;
             }
+
+            byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
+            response200Header(dos, body.length);
+            responseBody(dos, body);
         } catch (IOException e) {
             log.error(e.getMessage());
         }
@@ -74,6 +73,7 @@ public class RequestHandler extends Thread {
     private User createUser(Map<String, String> params) {
         User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
         log.debug("[*] newUser : {}", user);
+        DataBase.addUser(user);
         return user;
     }
 
