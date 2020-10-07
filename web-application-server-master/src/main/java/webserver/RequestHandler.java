@@ -37,7 +37,7 @@ public class RequestHandler extends Thread {
             log.debug("request line : {}", line);
 
             if (line == null) {
-                return ;
+                return;
             }
 
             String url = getUrl(line);
@@ -78,9 +78,7 @@ public class RequestHandler extends Thread {
     }
 
     private String getUrl(String line) {
-        return line.split( " ")[1];
-//        String[] tokens = line.split( " ");
-//        return tokens[1];
+        return line.split(" ")[1];
     }
 
     private void response302Header(DataOutputStream dos, String location) {
