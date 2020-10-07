@@ -88,12 +88,16 @@ public class RequestHandler extends Thread {
                 return;
             }
 
-            byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
-            response200Header(dos, body.length);
-            responseBody(dos, body);
+            responseResource(dos, url);
         } catch (IOException e) {
             log.error(e.getMessage());
         }
+    }
+
+    private void responseResource(DataOutputStream dos, String url) throws IOException {
+        byte[] body = Files.readAllBytes(new File("./webapp" + url).toPath());
+        response200Header(dos, body.length);
+        responseBody(dos, body);
     }
 
     private User createUser(Map<String, String> params) {
