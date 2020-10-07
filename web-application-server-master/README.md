@@ -1,3 +1,7 @@
+---
+
+---
+
 # 실습을 위한 개발 환경 세팅
 * https://github.com/slipp/web-application-server 프로젝트를 자신의 계정으로 Fork한다. Github 우측 상단의 Fork 버튼을 클릭하면 자신의 계정으로 Fork된다.
 * Fork한 프로젝트를 eclipse 또는 터미널에서 clone 한다.
@@ -14,7 +18,10 @@
 * 구현을 완료한 후 구현 과정에서 새롭게 알게된 내용, 궁금한 내용을 기록한다.
 * 각 요구사항을 구현하는 것이 중요한 것이 아니라 구현 과정을 통해 학습한 내용을 인식하는 것이 배움에 중요하다. 
 
+
+
 ### 요구사항 1 - http://localhost:8080/index.html로 접속시 응답
+
 ### 자바 입출력
 
 InputStreamReader의 생성자에 필요한 인자는 표준 입력을 통해 획득하고 BufferedReader의 생성자에서 필요한 인자는 InputStreamReader를 사용하면 된다.
@@ -92,7 +99,7 @@ BufferReader의 readLine() 를 쓸때는 inputStream 이 반드시 개행문자�
 - 헤더와 본문 사이의 빈 공백 라인
 - 응답 본문(Response Body)
 
-
+---
 
 ### 요구사항 2 - get 방식으로 회원가입
 
@@ -117,7 +124,7 @@ BufferReader의 readLine() 를 쓸때는 inputStream 이 반드시 개행문자�
 - RESTful API 를 사용하자
   - 요청에 맞는  HTTP Method를 사용하는 방식
 
-
+---
 
 ### 요구사항 3 - post 방식으로 회원가입
 ### HTTP 메소드
@@ -143,7 +150,7 @@ HTML의 모든 <a>태그 링크, CSS, JS, 이미지 요청은 모두 GET방식�
 
 GET과 POST만 사용해야 하는 상황이라면 이와 같은 기준으로 구분하고 추구 PUT, DELETE와 같은 다른 메소드를 사용할 때 더 세분화해 사용할 수 있다.
 
-
+---
 
 ### 요구사항 4 - redirect 방식으로 이동
 #### 회원가입 요청에 대한 응답으로 바로 index.html 페이지 내용을 response 할 때 문제점
@@ -227,11 +234,85 @@ if ("/user/create".startsWith(url)) {
 
 
 
+---
+
 ### 요구사항 5 - cookie
-* 
+##### 주의
+
+- Response 의 Set-Cookie를 매 요청의 응답으로 하면 안 됨.
+- response 에 cookie 사용 가능 범위를 지정해서 보내줘야 함
+
+### HTTP 프로토콜
+
+HTTP는 요청을 보내고 응답을 받으면 클라이언트와 서버 간의 연결을 끊는다.  매 요청마다 연결을 맺고 끊는다면 성능이 많이 떨어질 것이다. 이 같은 단점을 보완하고 성능을 높이기 위해 HTTP 1.1 부터는 한번 맺은 연결을 재사용한다.
+
+**연결을 재사용하지만 각 요청 간의 상태 데이터를 공유할 수는 없는 무상태 프로토콜의 특성을 가진다.**
+
+### Cookie
+
+HTTP는 클라이언트의 행위를 기억하기 위한 목적으로 쿠키(cookie)를 지원한다.
+
+서버가 로그인 결과에 따라 `Set-Cookie` 로 결과 값을 저장한다. 클라이언트는 Response Header에 `Set-Cookie` 가 존재하는 경우, 값을 읽어 Cookie값을 저장하고 서버에 보내는 요청 헤더의 `Cookie` 헤더 값으로 다시 전송 한다.
+
+
+
+### HTTP 캐시/쿠키 관련 헤더
+
+![image-20201007144639173](images/image-20201007144639173.png)
+
+![image-20201007144702831](images/image-20201007144702831.png)
+
+![image-20201007144715382](images/image-20201007144715382.png)
+
+[출처](https://gmlwjd9405.github.io/2019/01/28/http-header-types.html)
+
+### CSRF(Cross Site Request Forgery) 공격
+
+XSS가 사용자가 특정 사이트를 신뢰한다는 점을 공격하는거라면, CSRF는 특정 사이트가 사용자의 브라우저를 신뢰한다는 점을 공격하는 것이 다르다.
+
+XSS: 클라이언트에서 발생 / CSRF: 서버에서 발생
+
+##### **공격 과정**
+
+```java
+...<img src="<http://auction.com/changeUserAcoount?id=admin&password=admin>" width="0" height="0">...
+```
+
+1. 옥션 관리자 중 한명이 관리 권한을 가지고 회사내에서 작업을 하던 중 메일을 조회한다. (로그인이 이미 되어있다고 가정하면 관리자로서의 유효한 쿠키를 갖고있음)
+2. 해커는 위와 같이 태그가 들어간 코드가 담긴 이메일을 보낸다. 관리자는 이미지 크기가 0이므로 전혀 알지 못한다.
+3. 피해자가 이메일을 열어볼 때, 이미지 파일을 받아오기 위해 URL이 열린다.
+4. 해커가 원하는 대로 관리자의 계정이 id와 pw 모두 admin인 계정으로 변경된다.
+
+##### **방어 방법**
+
+**1. Referrer 검증**
+
+request header에 있는 요청을 한 페이지의 정보가 담긴 referrer 속성을 검증하여 차단.일반적으로 이 방법만으로도 대부분 방어가 가능할 수 있다.옥션이 아닌 개인 이메일에서 요청이 들어오는 것처럼,같은 도메인 상에서 요청이 들어오지 않는다면 차단하도록 하는 것이다.
+
+**2. CSRF Token 사용**
+
+랜덤한 수를 사용자의 세션에 저장하여 사용자의 모든 요청(Request)에 대하여 서버단에서 검증하는 방법.
+
+```java
+// 로그인시, 또는 작업화면 요청시 CSRF 토큰을 생성하여 세션에 저장한다. 
+session.setAttribute("CSRF_TOKEN",UUID.randomUUID().toString()); 
+// 요청 페이지에 CSRF 토큰을 셋팅하여 전송한다 
+<input type="hidden" name="_csrf" value="${CSRF_TOKEN}" />
+```
+
+**3. CAPTCHA 사용**
+
+요즘은 거의 모든 웹사이트에서 캡차를 이용하는 것 같은데 캡차이미지상의 숫자/문자가 아니라면 해당 요청을 거부하는 것이다.
+
+이 외에도 form 태그를 입력할 시 GET방식을 지양하고 POST방식을 쓰도록 하는 것은 기본이라고 할 수 있다.
+
+[출처](https://www.notion.so/ssun02/5-cookie-596762a9d2e748a39a6bc862c1b976d0#8efac781fd804ecb9c3ffba459481172)
+
+---
 
 ### 요구사항 6 - stylesheet 적용
 * 
 
 ### heroku 서버에 배포 후
 * 
+
