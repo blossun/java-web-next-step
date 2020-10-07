@@ -28,6 +28,9 @@ public class RequestHandler extends Thread {
         log.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
 
+        Map<String, String> headers = new HashMap<>();
+        Map<String, String> cookies = new HashMap<>();
+
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             log.debug("[Request Header] ====> \n");
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
@@ -40,7 +43,6 @@ public class RequestHandler extends Thread {
 
             String url = getUrl(line);
             line = br.readLine(); //request line 다음부터 headers line
-            Map<String, String> headers = new HashMap<>();
 
             while (!"".equals(line)) {
                 log.debug("header : {}", line);
@@ -51,6 +53,11 @@ public class RequestHandler extends Thread {
                 line = br.readLine();
             }
 
+            if (headers.get("Cookie") != null) {
+                cookies = parseCookies(headers.get("Cookie"));
+            }
+            log.debug("[*] Cookies : {}", cookies);
+
             DataOutputStream dos = new DataOutputStream(out);
 
             if ("/user/create".startsWith(url)) {
@@ -59,6 +66,25 @@ public class RequestHandler extends Thread {
                 Map<String, String> params = parseQueryString(requestBody);
                 createUser(params);
                 response302Header(dos, "/index.html");
+                return;
+            }
+
+            if ("/user/login ".startsWith(url)) { //login.html 페이지 요청과 구분 필요
+                String requestBody = readData(br, Integer.parseInt(headers.get("Content-Length")));
+                Map<String, String> params = parseQueryString(requestBody);
+                log.debug("[*] request - userId : {}, password : {}", params.get("userId"), params.get("password"));
+                User user = DataBase.findUserById(params.get("userId"));
+
+                if (user == null || !user.getPassword().equals(params.get("password"))) {
+                    responseLogin(dos,
+                            false,
+                            "/user/login_failed.html");
+                    return;
+                }
+
+                responseLogin(dos,
+                        true,
+                        "/index.html");
                 return;
             }
 
@@ -79,6 +105,18 @@ public class RequestHandler extends Thread {
 
     private String getUrl(String line) {
         return line.split(" ")[1];
+    }
+
+    private void responseLogin(DataOutputStream dos, boolean logined, String location) {
+        try {
+            dos.writeBytes("HTTP/1.1 302 OK \r\n");
+            //TODO: cookie 옵션 추가 설정 - path
+            dos.writeBytes("Set-Cookie: logined=" + logined + "\r\n");
+            dos.writeBytes("Location: " + location + "\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void response302Header(DataOutputStream dos, String location) {
