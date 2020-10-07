@@ -47,7 +47,9 @@ public class RequestHandler extends Thread {
             while (!"".equals(line)) {
                 log.debug("header : {}", line);
                 HttpRequestUtils.Pair header = parseHeader(line);
-                headers.put(header.getKey(), header.getValue());
+                if (header != null) {
+                    headers.put(header.getKey(), header.getValue());
+                }
                 line = br.readLine();
             }
 

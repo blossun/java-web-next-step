@@ -4,6 +4,7 @@ package util;
 import model.User;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,6 +41,19 @@ public class SolarHttpRequestUtilsTest {
         Map<String, String> params = HttpRequestUtils.parseQueryString(queryString);
         User newUser = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
         System.out.println("newUser : " + newUser.toString());
+    }
+
+    @Test
+    void map() {
+        Map<String, String> maps = new HashMap<>();
+        maps.put("Content-Length", null);
+        assertNull(maps.get("Cookie"));
+
+        maps.put("logined", "true");
+        assertEquals("true", maps.get("logined"));
+        maps.put("logined", "false");
+        assertEquals("false", maps.get("logined"));
+
     }
 
 }
