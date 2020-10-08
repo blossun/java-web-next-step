@@ -421,7 +421,12 @@ session.setAttribute("CSRF_TOKEN",UUID.randomUUID().toString());
 
 ### 요구사항 7 - stylesheet 적용
 
-* 
+- 응답 헤더의 Content-Type을 text/html로 보내면 브라우저는 html 파일 로 인식하기 때문에 css가 정상적으로 동작하지 않는다.
+- Stylesheet인 경우 응답 헤더의 Content-Type을 text/css로 전송한다. Content-Type은 확장자를 통해 구분할 수도 있으며, 요청 헤더의 Accept 를 활용할 수도 있다.
+
+요청과 응답 헤더는 본문 컨텐츠에 대한 정보를 제공한다. 이와 같이 데이터에 대한 정보를 포함하고 있는 헤더 정보들을 `메타데이터` 라고 부른다.
+
+예를 들어 `Content-Type` , `Content-Length` 헤더 정보는 실제 데이터가 아닌 본문 데이터에 대한 정보를 포함하고 있다.
 
 ### heroku 서버에 배포 후
 * 
